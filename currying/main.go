@@ -37,8 +37,9 @@ func NewVehicleCurrying(c Color) AddModelFunc {
 	return func(m Model) AddPlateFunc {
 		return func(p Plate) Vehicle {
 			return Vehicle{
-				Plate: p,
-				Model: m, Color: c,
+				Plate:   p,
+				Model:   m,
+				Color:   c,
 				Created: time.Now().Unix(),
 			}
 		}
