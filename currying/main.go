@@ -1,69 +1,56 @@
 package main
 
 import (
-    "fmt"
-    "time"
+	"fmt"
+	"time"
 )
 
-type Color int
-type Model int
-type Classification int
-
-const (
-    Blue Color = iota + 1
-    Green
-    Yellow
+type (
+	Plate string
+	Color int
+	Model int
 )
 
 const (
-    Corolla Model = iota + 1
-    Fox
-    Uno
+	Blue Color = iota + 1
+	Green
+	Yellow
 )
 
 const (
-    Heavy Classification = iota + 1
-    Luxury
-    OldSchool
+	Corolla Model = iota + 1
+	Fox
+	Uno
 )
 
-type AddModelFunc func(m Model) AddColorFunc
-type AddColorFunc func(c Color) AddPlateFunc
-type AddPlateFunc func(plate string) Vehicle
+type AddModelFunc func(m Model) AddPlateFunc
+type AddPlateFunc func(p Plate) Vehicle
 
 type Vehicle struct {
-    Plate          string
-    Color          Color
-    Model          Model
-    Classification Classification
-    Created        int64
+	Plate   Plate
+	Color   Color
+	Model   Model
+	Created int64
 }
 
-func NewVehicleCurrying(cl Classification) AddModelFunc {
-    return func(m Model) AddColorFunc {
-        return func(c Color) AddPlateFunc {
-            return func(plate string) Vehicle {
-                return Vehicle{
-                    Plate:          plate,
-                    Color:          c,
-                    Model:          m,
-                    Classification: cl,
-                    Created:        time.Now().Unix(),
-                }
-                
-            }
-            
-        }
-    }
+func NewVehicleCurrying(c Color) AddModelFunc {
+	return func(m Model) AddPlateFunc {
+		return func(p Plate) Vehicle {
+			return Vehicle{
+				Plate: p,
+				Model: m, Color: c,
+				Created: time.Now().Unix(),
+			}
+		}
+	}
 }
 
 func main() {
-    corolla := NewVehicleCurrying(OldSchool)(Corolla)(Blue)("AJB-1908")
-    fmt.Println(corolla)
-    
-    fox := NewVehicleCurrying(Luxury)(Fox)(Yellow)("AOI-0900")
-    fmt.Println(fox)
-    
-    uno := NewVehicleCurrying(Heavy)(Uno)(Green)("AOI-0900")
-    fmt.Println(uno)
+	corolla := NewVehicleCurrying(Blue)(Corolla)("A8I-90OK")
+	fox := NewVehicleCurrying(Yellow)(Fox)("AOI-0900")
+	uno := NewVehicleCurrying(Green)(Uno)("AOI-0900")
+
+	fmt.Println(uno)
+	fmt.Println(corolla)
+	fmt.Println(fox)
 }
